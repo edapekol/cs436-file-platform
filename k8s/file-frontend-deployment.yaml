@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: file-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: file-frontend
+  template:
+    metadata:
+      labels:
+        app: file-frontend
+    spec:
+      containers:
+        - name: file-frontend
+          image: us-central1-docker.pkg.dev/file-platform-dev/file-platform/file-frontend
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: file-frontend-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: file-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
