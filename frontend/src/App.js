@@ -6,81 +6,81 @@ function App() {
   const [fileList, setFileList] = useState([]);
   const [sortOption, setSortOption] = useState({ sort: "name", order: "asc" });
 
-  // Dosya listesini backend'den al
+  // Fetch file list from backend
   const fetchFileList = () => {
-    const query = `?sort=${sortOption.sort}&order=${sortOption.order}`;
+    const query = ?sort=${sortOption.sort}&order=${sortOption.order};
 
-    fetch(`http://localhost:8080/files${query}`)
+    fetch(http://localhost:8080/files${query})
       .then(res => res.json())
       .then(data => setFileList(data))
-      .catch(err => console.error("Dosyalar alınamadı:", err));
+      .catch(err => console.error("Failed to fetch files:", err));
   };
 
-  // Sıralama seçimi değiştiğinde listeyi güncelle
+  // Update list when sort option changes
   useEffect(() => {
     fetchFileList();
   }, [sortOption]);
 
-  // Dosya silme işlemi
+  // Handle file deletion
   const handleDelete = async (filename) => {
-    const confirmDelete = window.confirm(`${filename} dosyasını silmek istediğine emin misin?`);
+    const confirmDelete = window.confirm(Are you sure you want to delete ${filename}?);
     if (!confirmDelete) return;
 
     try {
-      const response = await fetch(`http://localhost:8080/files/${filename}`, {
+      const response = await fetch(http://localhost:8080/files/${filename}, {
         method: "DELETE",
       });
 
       if (response.ok) {
-        alert(`${filename} başarıyla silindi ✅`);
+        alert(${filename} deleted successfully ✅);
         fetchFileList();
       } else {
-        alert(`${filename} silinemedi ❌`);
+        alert(Failed to delete ${filename} ❌);
       }
     } catch (err) {
-      console.error("Silme hatası:", err);
-      alert("Dosya silme sırasında bir hata oluştu.");
+      console.error("Deletion error:", err);
+      alert("An error occurred while deleting the file.");
     }
   };
 
-  // Yükleme sonrası dosya listesini güncelle
+  // Update file list after upload
   const getUploadParams = () => {
     return { url: 'http://localhost:8080/upload' };
   };
 
   const handleChangeStatus = ({ meta }, status) => {
     if (status === 'done') {
-      console.log(`${meta.name} uploaded successfully`);
-      alert(`${meta.name} başarıyla yüklendi ✅`);
+      console.log(${meta.name} uploaded successfully);
+      alert(${meta.name} uploaded successfully ✅);
       fetchFileList();
     }
     if (status === 'error_upload') {
-      alert(`${meta.name} yüklenemedi ❌`);
+      alert(${meta.name} failed to upload ❌);
     }
   };
 
   return (
     <div style={{ width: '600px', margin: '50px auto' }}>
-      <h2>Dosya Yükleme</h2>
+      <h2>File Upload</h2>
 
-      {/* Sıralama Dropdown */}
+      {/* Sorting Dropdown */}
       <div style={{ marginBottom: '20px' }}>
-        <label htmlFor="sort-select">Sıralama:</label>
+        <label htmlFor="sort-select">Sort by:</label>
         <select
           id="sort-select"
-          value={`${sortOption.sort}-${sortOption.order}`}
+          value={${sortOption.sort}-${sortOption.order}}
           onChange={(e) => {
             const [sort, order] = e.target.value.split("-");
             setSortOption({ sort, order });
           }}
           style={{ marginLeft: '10px', padding: '4px' }}
         >
-          <option value="name-asc">Ada göre A–Z</option>
-          <option value="name-desc">Ada göre Z–A</option>
-          <option value="date-desc">Yüklenme: Yeni → Eski</option>
-          <option value="date-asc">Yüklenme: Eski → Yeni</option>
-          <option value="size-asc">Boyut: Küçük → Büyük</option>
-          <option value="size-desc">Boyut: Büyük → Küçük</option>
+          <option value="name-asc">Name A–Z</option>
+          <option value="name-desc">Name Z–A</option>
+          <option value="date-desc">Uploaded: Newest → Oldest</option>
+          <option value="date-asc">Uploaded: Oldest → Newest</option>
+          <option value="size-asc">Size: Small → Large</option>
+          <option value="size-desc">Size: Large → Small</option>
         </select>
       </div>
 
@@ -89,7 +89,7 @@ function App() {
         getUploadParams={getUploadParams}
         onChangeStatus={handleChangeStatus}
         accept="*"
-        inputContent="Dosyanızı buraya sürükleyin veya tıklayın"
+        inputContent="Drag your file here or click to upload"
         styles={{
           dropzone: {
             minHeight: 200,
@@ -99,8 +99,8 @@ function App() {
         }}
       />
 
-      {/* Dosya Listesi */}
-      <h3 style={{ marginTop: "40px" }}>Yüklenen Dosyalar:</h3>
+      {/* File List */}
+      <h3 style={{ marginTop: "40px" }}>Uploaded Files:</h3>
       <ul>
         {fileList.map((file, index) => (
           <li key={index} style={{ marginBottom: '10px' }}>
@@ -118,7 +118,7 @@ function App() {
                 borderRadius: '4px'
               }}
             >
-              Sil
+              Delete
             </button>
           </li>
         ))}
@@ -126,5 +126,7 @@ function App() {
     </div>
   );
 }
+
+export default App;
 
 export default App;
