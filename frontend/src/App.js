@@ -8,9 +8,9 @@ function App() {
 
   // Fetch file list from backend
   const fetchFileList = () => {
-    const query = ?sort=${sortOption.sort}&order=${sortOption.order};
+    const query = `?sort=${sortOption.sort}&order=${sortOption.order}`;
 
-    fetch(http://localhost:8080/files${query})
+    fetch(`http://localhost:8080/files${query}`)
       .then(res => res.json())
       .then(data => setFileList(data))
       .catch(err => console.error("Failed to fetch files:", err));
@@ -23,19 +23,19 @@ function App() {
 
   // Handle file deletion
   const handleDelete = async (filename) => {
-    const confirmDelete = window.confirm(Are you sure you want to delete ${filename}?);
+    const confirmDelete = window.confirm(`Are you sure you want to delete ${filename}?`);
     if (!confirmDelete) return;
 
     try {
-      const response = await fetch(http://localhost:8080/files/${filename}, {
+      const response = await fetch(`http://localhost:8080/files/${filename}`, {
         method: "DELETE",
       });
 
       if (response.ok) {
-        alert(${filename} deleted successfully ✅);
+        alert(`${filename} deleted successfully ✅`);
         fetchFileList();
       } else {
-        alert(Failed to delete ${filename} ❌);
+        alert(`Failed to delete ${filename} ❌`);
       }
     } catch (err) {
       console.error("Deletion error:", err);
@@ -50,12 +50,12 @@ function App() {
 
   const handleChangeStatus = ({ meta }, status) => {
     if (status === 'done') {
-      console.log(${meta.name} uploaded successfully);
-      alert(${meta.name} uploaded successfully ✅);
+      console.log(`${meta.name} uploaded successfully`);
+      alert(`${meta.name} uploaded successfully ✅`);
       fetchFileList();
     }
     if (status === 'error_upload') {
-      alert(${meta.name} failed to upload ❌);
+      alert(`${meta.name} failed to upload ❌`);
     }
   };
 
@@ -68,7 +68,7 @@ function App() {
         <label htmlFor="sort-select">Sort by:</label>
         <select
           id="sort-select"
-          value={${sortOption.sort}-${sortOption.order}}
+          value={`${sortOption.sort}-${sortOption.order}`}
           onChange={(e) => {
             const [sort, order] = e.target.value.split("-");
             setSortOption({ sort, order });
