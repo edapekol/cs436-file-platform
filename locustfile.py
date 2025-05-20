@@ -10,11 +10,17 @@ class FilePlatformUser(HttpUser):
 
     @task(2)
     def list_files(self):
-        self.client.get("/files")
+        with self.client.get("/files", name="List Files", catch_response=True) as response:
+            if response.status_code != 200:
+                response.failure(f"GET /files failed with status {response.status_code}")
 
     @task(1)
     def upload_file(self):
         filename = generate_filename()
-        content = b"This is test file content from Locust."
+        content = b"This is a test file content from Locust.\n" * 10  # Simulate larger file
         files = {"file": (filename, content)}
-        self.client.post("/upload", files=files)
+
+        with self.client.post("/upload", files=files, name="Upload File", catch_response=True) as response:
+            if response.status_code != 200:
+                response.failure(f"POST /upload failed with status {response.status_code}")
+
